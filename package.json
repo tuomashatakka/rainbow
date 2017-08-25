@@ -1,0 +1,68 @@
+{
+  "name": "rainbow",
+  "dependencies": {
+    "autobind-decorator": "^2.1.0",
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^3.19.0",
+    "eslint-plugin-react": "^7.3.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.5.4"
+  },
+
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 7,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "globals": {
+      "atom": true,
+      "Promise": true,
+      "module": true,
+      "process": true,
+      "emit": true,
+      "require": true,
+      "document": true,
+      "window": true,
+      "jQuery": true,
+      "Map": true,
+      "Set": true,
+      "__dirname": true,
+      "__pathname": true
+    },
+    "parser": "babel-eslint",
+    "plugins": [
+      "react"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "rules": {
+      "strict": 0
+    },
+    "settings": {
+      "react": {
+        "pragma": "React",
+        "version": "15.3.1"
+      }
+    }
+  },
+  "babel": {
+    "presets": [
+      "react"
+    ],
+    "plugins": [
+      "transform-object-rest-spread",
+      "transform-decorators-legacy"
+    ]
+  }
+}
