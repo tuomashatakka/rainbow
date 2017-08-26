@@ -85,6 +85,10 @@ class Color {
     let authoredType
 
     [ authoredType, this.red, this.green, this.blue, this.alpha ] = arguments
+    if (isNaN(parseInt(this.red) + parseInt(this.green) + parseInt(this.blue)))
+      throw new TypeError(`Invalid arguments passed for the constructor of Color. Use Color.from to parse a color from a hex color string.`)
+    this.alpha = isNaN(this.alpha) ? 255 : parseInt(this.alpha)
+
     this.meta = new Map()
     this.meta.set('originalFormat', authoredType)
   }
@@ -135,6 +139,9 @@ class Color {
 
     else if ([3, 4].indexOf(color.length) > -1)
       type = 'rgb'
+
+    if (!type || !Color[type])
+    throw new TypeError(`Invalid input for Color.from. The function accepts either a hex color value or a list of integers with a length of 3 or 4.`)
 
     return Color[type](color)
   }
