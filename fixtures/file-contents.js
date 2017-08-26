@@ -18,7 +18,8 @@ window.fileContents = `
 // @eq-color-9: #237bd2;   // blue / primary
 // @eq-color-10: #5541f6;  // purple ICCCE
 // @eq-color-15: #ee57d3;  // pink
-
+ --varri: #eeeeee;
+ @varri: #eaeaea;
 @import "colors";
 @ui-theme-name:   eq;
 @transition-time: 483ms;

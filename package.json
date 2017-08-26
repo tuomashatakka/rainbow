@@ -33,6 +33,7 @@
       "document": true,
       "window": true,
       "jQuery": true,
+      "WeakMap": true,
       "Map": true,
       "Set": true,
       "__dirname": true,

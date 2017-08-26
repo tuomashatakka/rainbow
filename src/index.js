@@ -1,20 +1,46 @@
 
 const fixture = window.fileContents
 
+const VARIABLE_PREFIX = {
+  '@': 'less',
+  '$': 'scss',
+  '--': 'css',
+}
+
+const NamedColorsCollection = () => ({
+  css:  new Map(),
+  less: new Map(),
+  scss: new Map(),
+})
+
 // Matchers
+const matchVariable  = /(?:(?:\(|\s|\n)(@|\$|--))(?:(\w[\w-_]*)\s*)(?:(:)\s*)?/g
 const matchPrefix    = /(#|(?:rgb|hsl)a?)/g
 const matchHexColors = /(?:[\dabcdef]{6}|[\dabcdef]{8}|[\dabcdef]{3,4})/ig
 const matchRgbColors = /\s*\(((?:\s*[\d.]{1,3}\s*,?)+)\s*\)/ig
 const matchAnyColors = combine(matchHexColors, matchRgbColors)
 
 
+
+
 function combine (...re) {
-  let pre = matchPrefix.source
+  let pre    = matchPrefix.source
+  let vari   = matchVariable.source
   let source = re.map(item => item.source || item).join('|')
-  return new RegExp(pre + '(' + source + ')', 'ig')
+  return new RegExp(`(?:${vari})?${pre}(${source})`, 'ig')
+}
+
+function parseVariableName (prefix, name, assignment) {
+  if (!prefix)
+    return null
+
+  assignment = assignment ? true : false
+  prefix     = VARIABLE_PREFIX[prefix]
+  return { assignment, name, prefix }
 }
 
 function parseColor (type, val) {
+
   const { min, max } = Math
   const limit = (val, isAlpha) => isAlpha
     ? max(min(1, parseFloat(val)), 0)
@@ -30,8 +56,22 @@ async function matchColors (text) {
   let colors = []
   text.replace(
     matchAnyColors,
-    (_, type, hex, rgb) => colors.push(parseColor(type, rgb || hex)))
+    (_, prefix, var_name, assignment, type, hex_value, rgb_value) => {
+      let value  = rgb_value || hex_value
+      let name   = parseVariableName(prefix, var_name, assignment)
+      let color  = parseColor(type, value)
+      colors.push({ color, name })
+    })
   return colors
+}
+async function matchVars (text) {
+  text.replace(
+    matchVariable,
+    (_, prefix, name, assignment) => {
+      let ns     = parseVariableName(prefix, name, assignment)
+      console.log(ns)
+    }
+  )
 }
 
 function orderBy (colors, param='hue') {
@@ -81,11 +121,14 @@ class Color {
     return new Color('rgb', r, g, b, a)
   }
 
-  static resolve (...color) {
+  static from (...color) {
     let type
 
     if (color.length === 1)
       color = color[0]
+
+    if (color instanceof Color)
+      return color
 
     if (color[0] === '#')
       type = 'hex'
@@ -94,6 +137,13 @@ class Color {
       type = 'rgb'
 
     return Color[type](color)
+  }
+
+  static equal (c1, c2) {
+    return (
+      c1 && c1.rgba &&
+      c2 && c2.rgba &&
+      c1.rgba === c2.rgba)
   }
 
   get components () {
@@ -151,19 +201,97 @@ class Color {
 class Palette {
   constructor () {
     this.colorSet = new Set()
+    this.namedColors = NamedColorsCollection()
   }
 
-  get colors () { return [ ...this.colorSet  ]}
+  get colors () {
+    return [ ...this.colorSet  ]
+  }
+
+  get names () {
+    return Object.keys(this.namedColors).reduce(
+      (arr, ln) => [ ...arr, ...this.namedColors[ln].keys() ], [])
+  }
 
   async findColors (text) {
     let colors = await matchColors(text)
     return colors.map(this.addColor.bind(this))
   }
 
-  addColor (color) {
-    color = Color.resolve(color)
+  addColor ({ color, name: ns }) {
+    let { name, assignment, prefix } = ns
+    color = Color.from(color)
     this.colorSet.add(color)
+    if (assignment)
+      this.namedColors[prefix].set(name, color)
     return color
+  }
+
+  hasColorWithName (name) {
+    return this.names.indexOf(name) > -1
+  }
+
+  /**
+   * @method getNameForColor
+   * @param  options {
+   *           all: false
+   *         }
+   */
+
+  getColorByName (name, options={}) {
+    if (!this.hasColorWithName(name))
+      return null
+    let results = {}
+    for (let ln in this.namedColors) {
+
+      results[ln] = options.all ? [] : null
+      let iter = this.namedColors[ln].entries()
+      let current = {}
+
+      while(!current.done) {
+        current = iter.next()
+        if (current.done)
+          break
+
+        let [ key, value ] = current.value
+        if (key === name) {
+          if (!options.all) {
+            results[ln] = value
+            break
+          }
+          results[ln].push(value)
+        }
+      }
+    }
+    return results
+  }
+
+  getNameForColor (color, options={}) {
+    let results = {}
+    color = Color.from(color)
+
+    for (let ln in this.namedColors) {
+
+      results[ln] = options.all ? [] : null
+      let iter = this.namedColors[ln].entries()
+      let current = {}
+
+      while(!current.done) {
+        current = iter.next()
+        if (current.done)
+          break
+
+        let [ key, value ] = current.value
+        if (Color.equal(value, color)) {
+          if (!options.all) {
+            results[ln] = key
+            break
+          }
+          results[ln].push(key)
+        }
+      }
+    }
+    return results
   }
 
   toJSON () {
