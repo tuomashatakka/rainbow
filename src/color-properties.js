@@ -32,7 +32,6 @@ function resolve (Ʃ) {
     for (let col in channels) {
       let d = channels[col] / 255
       v += coefficients[col] * (d < 0.03928 ? d / 12.92 : Math.pow(((d + 0.055) / 1.055), 2.4))
-      console.log(v, d)
     }
     return parseInt(v * 255)
   }
