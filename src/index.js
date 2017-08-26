@@ -15,7 +15,6 @@ function combine (...re) {
 }
 
 function parseColor (type, val) {
-  console.log("parse", ...arguments)
   const { min, max } = Math
   const limit = (val, isAlpha) => isAlpha
     ? max(min(1, parseFloat(val)), 0)
@@ -35,18 +34,17 @@ async function matchColors (text) {
   return colors
 }
 
+function orderBy (colors, param='hue') {
+  return colors.sort((c1, c2) => c1[param] > c2[param] ? 1 : c1[param] < c2[param] ? -1 : 0)
+}
+
+
 class Color {
+
   constructor () {
     let authoredType
 
-    [
-      authoredType,
-      this.red,
-      this.green,
-      this.blue,
-      this.alpha
-    ] = arguments
-
+    [ authoredType, this.red, this.green, this.blue, this.alpha ] = arguments
     this.meta = new Map()
     this.meta.set('originalFormat', authoredType)
   }
@@ -84,7 +82,6 @@ class Color {
   }
 
   static resolve (...color) {
-
     let type
 
     if (color.length === 1)
@@ -107,6 +104,19 @@ class Color {
       this.alpha
     ]
   }
+
+  get channels () {
+    return [ this.red, this.green, this.blue ]
+  }
+
+  get hex () { return this.toHex() }
+  get rgb () { return this.toRGB() }
+  get rgba () { return this.toRGBA() }
+  get hsl () { return this.toRGB() }
+
+  get hue () { return hue(this) }
+  get saturation () { return saturation(this) }
+  get brightness () { return brightness(this) }
 
   toString () {
     return this.toRGBA()
@@ -172,10 +182,12 @@ class Palette {
 
 class RainbowSwatch extends HTMLElement {
   connectedCallback () {
-    let color = this.color.toString()
-    this.innerHTML = color
-    this.style.setProperty('background', color)
-    this.setAttribute('style', 'background: ' + this.color.toHex())
+    const { color } = this
+    const textColor =  window.isLight(color) ? 'black' : 'white'
+
+    this.innerHTML = `H${color.hue}<br/>S${color.saturation}<br/>L${color.brightness}`
+    this.style.setProperty('background', color.toString())
+    this.style.setProperty('color', textColor)
   }
 }
 
@@ -184,14 +196,19 @@ class RainbowPanel extends HTMLElement {
   constructor () {
     super()
     this.palette = new Palette()
-    this.palette.findColors(fixture)
+    this.palette
+      .findColors(fixture)
       .then(this.appendColors.bind(this))
   }
 
   appendColors (colors) {
+
+    colors = orderBy(colors)
     for (let color of colors) {
+
       let el  = document.createElement('rainbow-swatch')
       el.color = color
+
       this.append(el)
     }
   }
@@ -202,18 +219,18 @@ class RainbowPanel extends HTMLElement {
 
 }
 
+function defineElements () {
+  customElements.define('rainbow-swatch', RainbowSwatch)
+  customElements.define('rainbow-panel',  RainbowPanel)
+}
 
 function init () {
-  customElements.define('rainbow-swatch', RainbowSwatch)
-  customElements.define('rainbow-panel', RainbowPanel)
-
+  defineElements()
   let panel = document.createElement('rainbow-panel')
   openPanel(panel)
 }
 
-function openPanel (content) {
-  let item = document.createElement('div')
-  item.append(content)
+function openPanel (item) {
   document.body.append(item)
 }
 
