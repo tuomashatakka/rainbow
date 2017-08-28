@@ -11,10 +11,17 @@ class SwatchView extends HTMLElement {
     const { color }       = this
     const textColor       = color.isLight() ? 'black' : 'white'
     const backgroundColor = color.toString()
+    let colorName       = color.name
 
     this.style.setProperty('color', textColor)
     this.style.setProperty('background', backgroundColor)
-    this.innerHTML = `H${color.hue}<br/>S${color.saturation}<br/>L${color.brightness}`
+    this.innerHTML = `
+      ${colorName ? colorName + '<br>' : ''}
+      ${color.hex}<br>
+      H${color.hue}<br>
+      S${color.saturation}<br>
+      L${color.brightness}
+    `
   }
 
   onDidClick (handler) {

@@ -5,25 +5,45 @@ const { make: element } = dom
 
 export default class Panel {
   static URI = 'rainbow://palette/swatch-panel'
+  static title = 'Rainbow Palette'
 
-  constructor () {
+  constructor (name) {
+    this.name = name
     this.item = createView.call(this)
   }
+
   getElement () {
     return this.item
   }
+
   getTitle () {
-    return 'eeli the anaali-paneeli'
+    return this.title || Panel.title
   }
+
+  getURI() {
+    return Panel.URI + '/' + this.name
+  }
+
   getDefaultLocation() {
     return 'right'
   }
+
   getAllowedLocations() {
     return ['center', 'bottom', 'top', 'right', 'left']
   }
-  getURI() {
-    return Panel.URI
+
+  open () {
+    atom.workspace.open(this)
   }
+
+  close () {
+    atom.workspace.hide(this)
+  }
+
+  toggle () {
+    atom.workspace.toggle(this)
+  }
+
   destroy () {
     if (this.item)
       this.item.remove()

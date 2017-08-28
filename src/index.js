@@ -28,7 +28,8 @@ export function initialize () {
 export async function activate () {
   notifyOnDebug("Rainbow yiss!")
   subscriptions.add(registerViewProvider())
-  panel = await atom.workspace.open(Panel.URI)
+  panel = new Panel('palette')
+  atom.workspace.open(panel)
   subscriptions.add(
     registerCommands(panel),
     registerListenerService(panel)
@@ -54,9 +55,10 @@ const registerViewProvider = subscribe(() => [
 
 const registerCommands = subscribe(panel => [
   atom.commands.add(
-    'atom-workspace',
-    'rainbow:find-colors-in-current-editor',
-    findColorsInCurrentEditor.bind(panel))
+    'atom-workspace', {
+    'rainbow:toggle-panel': panel.toggle.bind(panel),
+    'rainbow:find-colors-in-current-editor': findColorsInCurrentEditor.bind(panel),
+  })
 ])
 
 const registerListenerService = panel => {

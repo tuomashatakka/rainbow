@@ -1,8 +1,13 @@
 'use babel'
 import { match } from './definitions'
+import { TextEditor } from 'atom'
 
-export function orderBy (colors, param='hue') {
+export function sortBy (colors, param='hue') {
   return colors.sort((c1, c2) => c1[param] > c2[param] ? 1 : c1[param] < c2[param] ? -1 : 0)
+}
+
+export function isEditor (editor) {
+  return editor instanceof TextEditor && editor.isAlive()
 }
 
 export function combine (...re) {
@@ -16,18 +21,11 @@ export function defineElements (elements={}) {
   const output   = []
   for (let tagName in elements) {
     let viewClass = elements[tagName]
-    console.log("defining element", tagName, viewClass)
-
     try {
-      // let element =
       customElements.define(tagName, viewClass)
-      console.log("defined element", tagName, 'with a great success')
-      // output.push(element)
     }
-
     catch (e) {
       output.push(new Error(e))
-      // output.push(customElements.get(tagName))
     }
   }
   return output

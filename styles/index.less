@@ -1,13 +1,17 @@
 @import 'ui-variables';
 @c1: rgb(80,50,200);
 @c2: #987;
+@swatch-gutter: 1px;
 
 rainbow-palette {
-  display:    flex;
-  flex-wrap:  wrap;
-  justify-content: space-around;
-  padding:    @component-padding;
-  background: @tool-panel-background-color;
+  justify-content:  center;
+  overflow-y:       auto;
+  box-shadow:       0 1px 1.5em rgba(0,0,0,0.15);
+  flex-wrap:        wrap;
+  display:          flex;
+  padding:          @component-padding / 4;
+  background:       @tool-panel-background-color;
+  border-radius:    @component-border-radius;
 }
 
 rainbow-swatch {
@@ -15,37 +19,54 @@ rainbow-swatch {
   text-align:     center;
   box-sizing:     border-box;
   display:        inline-block;
-  padding:        @component-padding @component-padding / 2;
-  margin:         0 1px 1px 0;
-  flex:           1 1 6em;
-  width:          6em;
-  min-width:      4em;
+  padding:        1em;
+  margin:         0 @swatch-gutter @swatch-gutter 0;
+  flex:           1 1 0;
+  width:          auto;
+  min-width:      6em;
   height:         6em;
   line-height:    1em;
-  border-radius:  @component-border-radius / 4;;
-}
+  letter-spacing: -0.1em;
+  transition:
+    .2s color,
+    .2s opacity,
+    .2s background-color;
+
+  cursor:         alias;
+  &:not(.selected) { opacity: 0.5 }
+  &.selected {       opacity: 1 }
+  &:hover {          opacity: 0.75 }
+  & when (@swatch-gutter > 0) {
+    border-radius:  @component-border-radius / 2 }}
+
 
 atom-overlay.rainbow-color {
-  background: @overlay-background-color;
-  padding:    0em;
   box-shadow: 0 1px 10px rgba(0,0,0,0.3);
-  transform: translateY(-100%);
-  height: auto;
+  background: @overlay-background-color;
+  transform:  translateY(-100%);
+  padding:    0em;
+  height:     auto;
+}
+
+.rainbow-panel {
+  display:       flex;
+  flex-flow:     column nowrap;
+  margin-bottom: 2em;
 }
 
 .rainbow-color {
   background-color: var(--color) !important;
-  border-radius: 1em;
-  width: 2em;
-  mix-blend-mode: screen;
+  mix-blend-mode:   screen;
+  border-radius:    1em;
+  width:            2em;
 }
 
-.rainbow-color.dot // Dot after
-{
-  -webkit-mask-image: radial-gradient(2em 2em, white 0.5em, transparent 0.54em);
+
+.rainbow-color.dot {
   -webkit-mask-position: 0px 0px;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: 2em 100%;
-  transform: translateX(100%);
-  border-radius: 0;
+  -webkit-mask-repeat:   no-repeat;
+  -webkit-mask-image:    radial-gradient(2em 2em, white 0.5em, transparent 0.54em);
+  -webkit-mask-size:     2em 100%;
+  border-radius:         0;
+  transform:             translateX(100%);
 }
