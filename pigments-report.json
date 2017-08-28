@@ -1,0 +1,71 @@
+{
+  "atom": "1.19.3",
+  "pigments": "0.40.2",
+  "platform": "win32",
+  "config": {
+    "autocompleteSuggestionsFromValue": true,
+    "dismissableReloadNotifications": false,
+    "extendAutocompleteToColorValue": true,
+    "extendAutocompleteToVariables": true,
+    "markerType": "native-dot",
+    "mergeColorDuplicates": true,
+    "sortPaletteColors": "by color",
+    "supportedFiletypes": [
+      "js",
+      "css",
+      "less",
+      "scss"
+    ],
+    "traverseIntoSymlinkDirectories": true,
+    "sourceNames": [
+      "**/*.css",
+      "**/*.styl",
+      "**/*.stylus",
+      "**/*.less",
+      "**/*.sass",
+      "**/*.scss"
+    ],
+    "ignoredNames": [
+      "vendor/*",
+      "node_modules/*",
+      "spec/*",
+      "test/*"
+    ],
+    "ignoredBufferNames": [],
+    "extendedSearchNames": [
+      "**/*.css"
+    ],
+    "filetypesForColorWords": [
+      "css",
+      "less",
+      "styl",
+      "stylus",
+      "sass",
+      "scss"
+    ],
+    "ignoredScopes": [],
+    "autocompleteScopes": [
+      ".source.css",
+      ".source.css.less",
+      ".source.sass",
+      ".source.css.scss",
+      ".source.stylus"
+    ],
+    "maxDecorationsInGutter": 100,
+    "sassShadeAndTintImplementation": "compass",
+    "groupPaletteColors": "none",
+    "delayBeforeScan": 500,
+    "ignoreVcsIgnoredPaths": true,
+    "notifyReloads": true
+  },
+  "project": {
+    "config": {},
+    "paths": [
+      "C:\\Users\\tuoma\\Documents\\Projects\\atom\\rainbow\\**"
+    ],
+    "variables": {
+      "colors": 2,
+      "total": 2
+    }
+  }
+}

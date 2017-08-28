@@ -1,0 +1,51 @@
+@import 'ui-variables';
+@c1: rgb(80,50,200);
+@c2: #987;
+
+rainbow-palette {
+  display:    flex;
+  flex-wrap:  wrap;
+  justify-content: space-around;
+  padding:    @component-padding;
+  background: @tool-panel-background-color;
+}
+
+rainbow-swatch {
+  vertical-align: top;
+  text-align:     center;
+  box-sizing:     border-box;
+  display:        inline-block;
+  padding:        @component-padding @component-padding / 2;
+  margin:         0 1px 1px 0;
+  flex:           1 1 6em;
+  width:          6em;
+  min-width:      4em;
+  height:         6em;
+  line-height:    1em;
+  border-radius:  @component-border-radius / 4;;
+}
+
+atom-overlay.rainbow-color {
+  background: @overlay-background-color;
+  padding:    0em;
+  box-shadow: 0 1px 10px rgba(0,0,0,0.3);
+  transform: translateY(-100%);
+  height: auto;
+}
+
+.rainbow-color {
+  background-color: var(--color) !important;
+  border-radius: 1em;
+  width: 2em;
+  mix-blend-mode: screen;
+}
+
+.rainbow-color.dot // Dot after
+{
+  -webkit-mask-image: radial-gradient(2em 2em, white 0.5em, transparent 0.54em);
+  -webkit-mask-position: 0px 0px;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 2em 100%;
+  transform: translateX(100%);
+  border-radius: 0;
+}
