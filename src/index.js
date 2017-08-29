@@ -11,7 +11,7 @@ import ColorMarker from './views/ColorMarker'
 import ScopeManager from './models/ScopeManager'
 
 let subscriptions
-let panel
+let panel, manager
 let elements = {
   [PaletteView.tag]:  PaletteView,
   [SwatchView.tag]:   SwatchView,
@@ -30,6 +30,7 @@ export async function activate () {
   subscriptions.add(registerViewProvider())
   panel = new Panel('palette')
   atom.workspace.open(panel)
+
   subscriptions.add(
     registerCommands(panel),
     registerListenerService(panel)
@@ -58,11 +59,13 @@ const registerCommands = subscribe(panel => [
     'atom-workspace', {
     'rainbow:toggle-panel': panel.toggle.bind(panel),
     'rainbow:find-colors-in-current-editor': findColorsInCurrentEditor.bind(panel),
+    'rainbow:clear-palette-view-colors': () => manager.paletteView.clearColors(),
+    'rainbow:clear-colors': () => manager.palette.clear(),
   })
 ])
 
 const registerListenerService = panel => {
-  let manager = new ScopeManager(panel)
+  manager = new ScopeManager(panel)
   return new Disposable(() => manager.destroy())
 }
 
