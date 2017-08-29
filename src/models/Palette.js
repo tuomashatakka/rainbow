@@ -45,9 +45,9 @@ export default class Palette extends Emitter {
   }
 
   @self
-  async findColors (text) {
+  async findColors (text, meta={}) {
     let colors = await matchColors(text)
-    return this.cleanColors(colors)
+    return this.addColors(colors, meta)
   }
 
   cleanColors (colors=[]) {
@@ -99,7 +99,6 @@ export default class Palette extends Emitter {
   @self
   addColor ({ color, name: ns = {}, meta={} }) {
     meta.palette = this
-
     color = Color.from(color, meta)
     color.updateMeta(meta)
 
@@ -116,9 +115,10 @@ export default class Palette extends Emitter {
   }
 
   @self
-  addColors (colors) {
+  addColors (colors, meta={}) {
     let created = []
     for (let color of colors) {
+      Object.assign(color.meta, meta)
       color = this.addColor(color)
       if (color)
         created.push(color)
@@ -133,6 +133,17 @@ export default class Palette extends Emitter {
       colors = colors.filter(filter)
     }
     return colors
+  }
+
+  @self
+  removeColors (colors) {
+    for (let color of colors) {
+      if (this.hasColor(color)) {
+        this.swatches.delete(color)
+        this.emit(REMOVE_COLOR, colors)
+      }
+    }
+
   }
 
   @self

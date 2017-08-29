@@ -4,6 +4,8 @@ import { match, VARIABLE_PREFIX } from './definitions'
 
 export const anyColor = combine(match.colors.hex, match.colors.rgb)
 
+export const preciseColor = combine('unprefixed', match.colors.hex, match.colors.rgb)
+
 export function queryHandler (_, prefix, var_name, assignment, type, hex_value, rgb_value) {
   let value  = rgb_value || hex_value
   let name   = parseVariableName(prefix, var_name, assignment)
@@ -11,9 +13,13 @@ export function queryHandler (_, prefix, var_name, assignment, type, hex_value, 
   return { color, name }
 }
 
-export async function matchColors (text) {
+export async function matchColors (text, meta={}) {
   const colors   = []
-  text.replace(anyColor, (...args) => colors.push(queryHandler(...args)))
+  text.replace(anyColor, (...args) => {
+    let color = queryHandler(...args)
+    color.meta = Object.assign(color.meta || {}, meta)
+    colors.push(color)
+  })
   return colors
 }
 

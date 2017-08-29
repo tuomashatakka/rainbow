@@ -16,11 +16,15 @@ class SwatchView extends HTMLElement {
     this.style.setProperty('color', textColor)
     this.style.setProperty('background', backgroundColor)
     this.innerHTML = `
-      ${colorName ? colorName + '<br>' : ''}
-      ${color.hex}<br>
-      H${color.hue}<br>
-      S${color.saturation}<br>
-      L${color.brightness}
+      <div class='content'>
+        <h4 class='name'>${colorName ? colorName + '<br>' : ''}</h4>
+        <code class='value'>${color.hex}<br></code>
+        <div class='details'>
+          H${color.hue}<br>
+          S${color.saturation}<br>
+          L${color.brightness}
+        </div>
+      </div>
     `
   }
 

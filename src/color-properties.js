@@ -56,6 +56,10 @@ export function saturation (color) {
   return parseInt(distance * 255)
 }
 
+export function setSaturation (color, value) {
+return value // lol
+}
+
 export function hue (color, format='deg') {
   let { x, y } = rotation(color)
   let rot      = (Math.atan2(y, x) + R) % R
@@ -64,6 +68,12 @@ export function hue (color, format='deg') {
   if (format === 'rad')
     return rot
   throw new TypeError('Format must be either `deg` or `rad` for the hue function')
+}
+
+export function setHue (color, value) {
+  let distance = intensity(color)
+  let angle    = degreesToRadians(value % 360)
+
 }
 
 
@@ -78,6 +88,9 @@ export function isDark (color) {
 
 function radiansToDegrees (rad) {
   return round(180 * rad / PI)
+}
+function degreesToRadians (deg) {
+  return deg / 180 * PI
 }
 
 function hueComponents (color) {
@@ -98,4 +111,10 @@ function rotation (color) {
     y += dy
   }
   return { x, y }
+}
+
+function intensity (color) {
+  let { x, y } = rotation(color)
+  let distance = Math.sqrt(x * x + y * y)
+  return distance
 }

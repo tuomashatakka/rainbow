@@ -1,4 +1,5 @@
 const { CompositeDisposable, Disposable } = require('atom')
+const { findSwatchElement, isSwatch } = require('../utils')
 const Color = require('../models/Color')
 
 class PaletteView extends HTMLElement {
@@ -17,10 +18,11 @@ class PaletteView extends HTMLElement {
   clearColors () {
     // Clear the existing colors
     [ ...this.children ].forEach(color => color.remove())
+    console.warn("Colors cleared")
   }
 
   clearSelection () {
-    this.iterateColors(c => c.removeAttribute('class'))
+    this.iterateColors(c => c.classList.remove('selected'))
   }
 
   selectColor (color) {
@@ -53,11 +55,12 @@ class PaletteView extends HTMLElement {
   }
 
   async removeColors (colors) {
-    const search = color => colors.find(comparedColor => Color.equal(comparedColor, color)) !== null
+    const search = color => colors.find(comparedColor => color.is(comparedColor))
     this.iterateColors(child => {
       if (search(child.color))
         child.remove()
     })
+    console.warn("Colors removed:", colors)
   }
 
   async appendColors (colors) {
@@ -69,26 +72,32 @@ class PaletteView extends HTMLElement {
       let swatch  = createSwatch(color)
       this.append(swatch)
     }
+    console.warn("Colors added:", colors)
     return this.children
   }
 
   onDidClickColor (handler) {
     const eventName = 'click'
-    const isSwatch  = el => el.tagName === 'RAINBOW-SWATCH'
     const unbind    = () => this.removeEventListener(eventName, callback)
     const bind      = () => this.addEventListener(eventName, callback)
     const callback  = (e) => {
-      let el
-      let { path } = e
-      while (path.length) {
-        el = path.shift()
-        if (isSwatch(el))
-          break
-      }
+      let el = findSwatchElement(e)
       if (isSwatch(el))
         handler.call(this, el.color, el)
     }
+    this.subscriptions.add(new Disposable(unbind))
+    bind()
+  }
 
+  onDidDoubleClickColor (handler) {
+    const eventName = 'dblclick'
+    const unbind    = () => this.removeEventListener(eventName, callback)
+    const bind      = () => this.addEventListener(eventName, callback)
+    const callback  = (e) => {
+      let el = findSwatchElement(e)
+      if (isSwatch(el))
+        handler.call(this, el.color, el)
+    }
     this.subscriptions.add(new Disposable(unbind))
     bind()
   }

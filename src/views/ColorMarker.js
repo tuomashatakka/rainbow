@@ -39,7 +39,7 @@ export default class ColorMarker {
     let { type } = this.constructor
     return {
       type,
-      invalidate: 'never',
+      invalidate: 'touch',
     }
   }
 
