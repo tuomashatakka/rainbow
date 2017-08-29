@@ -104,9 +104,10 @@ window.fileContents = `
 @tab-bar-border-color:        @base-border-color;
 @tab-border-color:            @base-border-color;
 @tree-view-border-color:      @base-border-color;
-@rgbtest: rgb(0,100, 300);
-@rgbtest2: rgba (  025,100, 300,    0.8 );
-@rgbtest2: rgba (  025114,100, 300,    0.8 );
+
+--ok: rgb(0,100, 300);
+@rgbtest2: rgba(  025,100, 300,    0.8 );
+@rgbtest2: rgba(  025114,100, 300,    0.8 );
 
 @tooltip-text-color:          @eq-color-text;
 @tooltip-background-color:    @eq-color-annotation;

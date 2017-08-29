@@ -1,7 +1,10 @@
 @import 'ui-variables';
-@c1: rgb(80,50,200);
-@c2: #987;
+@c1: rgb(80,50, 200);
+@c2: #98e880;
+@collor: #eaa0ca;
+
 @swatch-gutter: 1px;
+@swatch-size:   1/5;
 
 rainbow-palette {
   justify-content:  center;
@@ -18,24 +21,57 @@ rainbow-swatch {
   vertical-align: top;
   text-align:     center;
   box-sizing:     border-box;
+  position:       relative;
   display:        inline-block;
-  padding:        1em;
+  padding:        0 0 @swatch-size * 100%;
   margin:         0 @swatch-gutter @swatch-gutter 0;
-  flex:           1 1 0;
-  width:          auto;
-  min-width:      6em;
-  height:         6em;
+  border:         1px solid transparent;
+  flex:           0 0 auto;
+  width:        ~"calc(@{swatch-size} * 100% - 1px)";
+  height:         0; // 6em;
   line-height:    1em;
-  letter-spacing: -0.1em;
+  letter-spacing: -0.04em;
+  cursor:         alias;
   transition:
     .2s color,
     .2s opacity,
     .2s background-color;
 
-  cursor:         alias;
-  &:not(.selected) { opacity: 0.5 }
-  &.selected {       opacity: 1 }
-  &:hover {          opacity: 0.75 }
+  .content {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    max-width: 100%;
+
+    .name {
+      margin: 0;
+      padding: 0;
+      font-size: inherit;
+      font-size: 0.75em;
+      color: inherit;
+    }
+    .value {
+      font: inherit;
+      display: block;
+      background: transparent;
+      color: inherit;
+      font-size: 0.5em;
+      letter-spacing: 0.1em;
+    }
+    .details {
+      display: none;
+    }
+  }
+
+  &:not(.selected) {
+    opacity: 0.8 }
+  &:hover {
+    opacity: 0.9 }
+  &.selected {
+    border-color: @text-color-info;
+    opacity: 1;
+  }
   & when (@swatch-gutter > 0) {
     border-radius:  @component-border-radius / 2 }}
 

@@ -70,7 +70,8 @@
       "plugin:react/recommended"
     ],
     "rules": {
-      "strict": 0
+      "strict": 0,
+      "no-console": 1
     },
     "settings": {
       "react": {
